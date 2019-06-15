@@ -7,6 +7,7 @@ predictor = dlib.shape_predictor(PREDICTOR_PATH)
 detector = dlib.get_frontal_face_detector()
 
 def get_landmarks(im):
+    # dapetin landmarks dari wajah (jaw, eye, mouth, dll)
     rects = detector(im, 1)
 
     if len(rects) > 1 or len(rects) == 0:
@@ -15,6 +16,7 @@ def get_landmarks(im):
 
 
 def annotate_landmarks(im, landmarks):
+    # kasi text index ke titik2 landmark wajah
     im = im.copy()
     for idx, point in enumerate(landmarks):
         pos = (point[0, 0], point[0, 1])
@@ -27,6 +29,8 @@ def annotate_landmarks(im, landmarks):
 
 def top_lip(landmarks):
     top_lip_pts = []
+    # 50 - 52 itu posisi top lip bagian atas
+    # 61 - 63 itu posisi top lip bagian bawah
     for i in range(50,53):
         top_lip_pts.append(landmarks[i])
     for i in range(61,64):
@@ -37,6 +41,8 @@ def top_lip(landmarks):
 
 def bottom_lip(landmarks):
     bottom_lip_pts = []
+    # 65 - 67 itu posisi bottom lip bagian atas
+    # 56 - 58 itu posisi bottom lip bagian bawah
     for i in range(65,68):
         bottom_lip_pts.append(landmarks[i])
     for i in range(56,59):
@@ -67,6 +73,9 @@ while True:
     
     prev_yawn_status = yawn_status  
     
+    # kalo jarak antar top lip dan bottom lip > 25, berarti dia menguap
+    # threshold ini disesuaian saja, jangan terlalu kecil juga
+    # karena nanti kalo object ny lagi ngmng bisa ke detect lagi yawn
     if lip_distance > 25:
         yawn_status = True 
         
